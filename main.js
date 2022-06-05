@@ -18,8 +18,18 @@ const getLatestNews = async() => {
 
 };
 
-const getNewsByTopic = (event)=>{
-    console.log("클릭됨",event.target.textContent)
+const getNewsByTopic = async (event)=>{
+    console.log("클릭됨",event.target.textContent);
+    let topic = event.target.textContent.toLowerCase();
+    let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
+    
+    let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
+    let response = await fetch(url,{headers:header});
+    let data = await response.json();
+    news = data.articles;
+    render();
+
+    console.log(data);
 }
 
 const render = ()=>{
