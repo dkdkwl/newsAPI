@@ -3,33 +3,47 @@ let menus = document.querySelectorAll(".menus button");
 menus.forEach(menu => menu.addEventListener("click",(event)=>{
     getNewsByTopic(event);
 }))
-console.log(menus);
+
+let searchButton = document.querySelector(".search-button");
+let url;
+
+// 각 함수에서 필요한 url을 만든다
+// api호출 함수를 부른다.
+
+const getNews = async ()=>{
+  let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
+  let response = await fetch(url,{headers:header});
+  let data = await response.json();
+  news = data.articles;
+  render();
+}
+
 const getLatestNews = async() => {
-    let url = new URL(
+    url = new URL(
         `https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=business&page_size=10`
         );
-        let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
-
-        let response = await fetch(url,{headers:header});
-        let data = await response.json();
-        news = data.articles;
-        
-        render();
+        getNews();
 
 };
 
 const getNewsByTopic = async (event)=>{
-    console.log("클릭됨",event.target.textContent);
     let topic = event.target.textContent.toLowerCase();
-    let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
-    
-    let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
-    let response = await fetch(url,{headers:header});
-    let data = await response.json();
-    news = data.articles;
-    render();
+    url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
+    getNews();
+}
 
-    console.log(data);
+const getNewsByKeyword = async ()=>{
+  //1. 검색 키워드 읽어오기
+  //2. url에 검색 키워드 부치기
+  //3. 헤더준비
+  //4. url부르기
+  //5. 데이터 가져오기
+  //6. 데이터 보여주기
+
+  let keyword = document.getElementById("search-input").value;
+  url = new URL(`https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`)
+  getNews();
+  
 }
 
 const render = ()=>{
@@ -48,10 +62,10 @@ const render = ()=>{
     }).join('');
     console.log(news)
     document.getElementById("news-board").innerHTML = newsHTML;
-
-
 }
 
+
+searchButton.addEventListener("click",getNewsByKeyword);
 getLatestNews();
 
 
