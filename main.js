@@ -11,6 +11,23 @@ let url;
 // api호출 함수를 부른다.
 
 const getNews = async ()=>{
+   try{
+    let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
+    let response = await fetch(url,{headers:header});
+    let data = await response.json();
+    if(response.status == 200){
+      news = data.articles;
+      cpnsole.log(news)
+      render();
+    }else{
+      throw new Error(data.message);
+    }
+  }catch(error){
+
+    console.log("잡힌 에러는?",error.message);
+    errorRender(error)
+  }
+
   let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
   let response = await fetch(url,{headers:header});
   let data = await response.json();
@@ -60,8 +77,12 @@ const render = ()=>{
             </div>
         </div>`
     }).join('');
-    console.log(news)
     document.getElementById("news-board").innerHTML = newsHTML;
+}
+
+const errorRender = (message) =>{
+  let errorHTML = `<div class="alert alert-danger" role="alert">${message}</div>`
+  document.getElementById("news-board").innerHTML = errorHTML;
 }
 
 
