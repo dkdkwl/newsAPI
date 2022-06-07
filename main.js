@@ -1,4 +1,6 @@
 let news = [];
+let page = 1;
+let total_pages = 0;
 let menus = document.querySelectorAll(".menus button");
 menus.forEach(menu => menu.addEventListener("click",(event)=>{
     getNewsByTopic(event);
@@ -17,7 +19,6 @@ const getNews = async ()=>{
     let data = await response.json();
     if(response.status == 200){
       news = data.articles;
-      cpnsole.log(news)
       render();
     }else{
       throw new Error(data.message);
@@ -32,7 +33,13 @@ const getNews = async ()=>{
   let response = await fetch(url,{headers:header});
   let data = await response.json();
   news = data.articles;
+  console.log("받는 데이터가 뭐지?",data);
+  page = data.page;
+  total_pages = data.total_pages;
   render();
+  pagenation();
+
+
 }
 
 const getLatestNews = async() => {
@@ -80,11 +87,33 @@ const render = ()=>{
     document.getElementById("news-board").innerHTML = newsHTML;
 }
 
+
 const errorRender = (message) =>{
   let errorHTML = `<div class="alert alert-danger" role="alert">${message}</div>`
   document.getElementById("news-board").innerHTML = errorHTML;
 }
 
+
+const pagenation = ()=>{
+  let pagenationHTML = '';
+  //total_page
+  //current_page
+  
+  //page_group
+  let pageGroup = Math.ceil(page/5);
+
+  //last_page
+  let lastPage = pageGroup*5;
+
+  //first_page
+  let firstPage = lastPage - 4;
+
+  //first-last 페이지 프린트
+  for(let i=firstPage; i <= lastPage; i++){
+    pagenationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+  }
+  document.querySelector(".pagination").innerHTML = pagenationHTML
+}
 
 searchButton.addEventListener("click",getNewsByKeyword);
 getLatestNews();
