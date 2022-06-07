@@ -29,6 +29,8 @@ const getNews = async ()=>{
     errorRender(error)
   }
 
+  url.searchParams.set('page',page);
+  console.log(url)
   let header = new Headers({'x-api-key':'9cOmEeBlDd_8GHfIb6748kBIaLAIVEafVSWqCndLz6o'});
   let response = await fetch(url,{headers:header});
   let data = await response.json();
@@ -110,7 +112,7 @@ const pagenation = ()=>{
 
   //first-last 페이지 프린트
   for(let i=firstPage; i <= lastPage; i++){
-    pagenationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+    pagenationHTML += `<li class="page-item ${page == i ? "active" : "" }"><a class="page-link" onClick="moveToPage(${i})" href="#">${i}</a></li>`
   }
   document.querySelector(".pagination").innerHTML = pagenationHTML
 }
@@ -118,6 +120,15 @@ const pagenation = ()=>{
 searchButton.addEventListener("click",getNewsByKeyword);
 getLatestNews();
 
+const moveToPage = (pageNum)=>{
+  // 1. 이동하고 싶은 페이지를 알아야한다.
+  page = pageNum;
+  console.log(page)
+
+  // 2. 이동하고 싶은 페이지를 가지고 api를 다시 호출해주자
+
+  getNews()
+}
 
 const openNav = () => {
     document.getElementById("mySidenav").style.width = "250px";
